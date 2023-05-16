@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IP批量添加端口号 - sbbbb.cn </title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+.container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+        textarea {
+            width: 400px;
+            height: 200px;
+        }
+		body {
+    background-color: #000;
+    color: #0F0;
+    font-family: 'Courier New', monospace;
+    padding: 20px;
+    margin: 0;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+label, button {
+    display: block;
+    margin-bottom: 10px;
+}
+
+textarea, input {
+    background-color: #222;
+    border: none;
+    color: #0F0;
+    padding: 5px;
+    margin-bottom: 10px;
+    width: 400px;
+}
+
+button {
+    background-color: #0F0;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #080;
+}
+
+#result {
+    width: 400px;
+    height: 200px;
+}
+
+.copy-btn {
+    display: inline-block;
+    background-color: #0F0;
+    color: #000;
+    padding: 8px 16px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.copy-btn:hover {
+    background-color: #080;
+}
+
+    </style>
+</head>
+<body>
+	<div class="container">
+    <h1>IP端口号批量添加工具</h1>
+    
+    <label for="ipList">IP列表：</label>
+    <textarea id="ipList" placeholder="在此输入IP地址，每行一个"></textarea>
+    
+    <label for="portList">端口号列表：</label>
+    <input type="text" id="portList" placeholder="在此输入端口号，多个端口号以逗号分隔" value="80,443,8080,8000-8005">
+    
+    <button onclick="addPorts()">确认</button>
+    
+    <h2>结果：</h2>
+    <textarea id="result" readonly></textarea>
+    
+    <button class="copy-btn" onclick="copyResult()">复制结果</button>
+	</div>
+
+<script>
+    function addPorts() {
+        var ipList = document.getElementById('ipList').value.trim().split('\n');
+        var portList = document.getElementById('portList').value.trim().split(',');
+
+        var result = '';
+
+        for (var i = 0; i < ipList.length; i++) {
+            var ip = ipList[i].trim();
+
+            for (var j = 0; j < portList.length; j++) {
+                var portRange = portList[j].trim();
+                if (portRange.includes('-')) {
+                    var range = portRange.split('-');
+                    var start = parseInt(range[0].trim());
+                    var end = parseInt(range[1].trim());
+
+                    for (var port = start; port <= end; port++) {
+                        result += ip + ':' + port + '\n';
+                    }
+                } else {
+                    var port = parseInt(portRange);
+                    result += ip + ':' + port + '\n';
+                }
+            }
+        }
+
+        document.getElementById('result').value = result;
+    }
+
+    function copyResult() {
+        var resultTextArea = document.getElementById('result');
+        resultTextArea.select();
+        document.execCommand("copy");
+        alert("已复制结果到剪贴板！");
+    }
+</script>
+
+</body>
+</html>
